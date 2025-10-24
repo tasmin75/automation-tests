@@ -27,6 +27,9 @@ I'm still learning testing concepts, but this assignment helped me understand:
 ## Setup Instructions
 
 1. Clone this repository
+ 
+git clone https://github.com/tasmin75/automation-tests
+
 2. Install dependencies:
 
 ```
@@ -61,16 +64,3 @@ The test automates a simple shopping journey:
 - I added console.log statements to help me understand the flow
 - The screenshot is saved as `payment-page.png`
 
-```
-
-## Folder Structure:
-```
-
-automation-exe-tests/
-├── tests/
-│ └── shopping-test.spec.ts
-├── playwright.config.ts
-├── package.json
-├── package-lock.json
-├── README.md
-└── payment-page.png(screenshots)
