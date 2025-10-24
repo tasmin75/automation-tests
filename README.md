@@ -28,7 +28,7 @@ I'm still learning testing concepts, but this assignment helped me understand:
 
 1. Clone this repository
  
-git clone https://github.com/tasmin75/automation-tests
+   git clone https://github.com/tasmin75/automation-tests
 
 2. Install dependencies:
 
