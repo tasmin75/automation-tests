@@ -1,48 +1,74 @@
 import { test, expect } from "@playwright/test";
 
-test("Simple shopping test", async ({ page }) => {
-  console.log("Starting my first automation test...");
+test("shopping cart test", async ({ page }) => {
+  test.setTimeout(60000);
 
-  console.log("Going to website...");
+  console.log("going to home page");
   await page.goto("https://automationexercise.com");
 
-  const pageTitle = await page.title();
-  console.log("Website title: " + pageTitle);
+  const logo = page.getByText("AutomationExercise").first();
+  await expect(logo).toBeVisible();
+  console.log("home page loades");
 
-  console.log("Adding product to cart...");
+  const frstProduct = page.locator(".product-image-wrapper").first();
+  await frstProduct.hover();
 
-  await page.locator(".product-image-wrapper").first().hover();
-  await page.locator("a[data-product-id]").first().click();
+  await page.waitForTimeout(500);
 
-  await page.click("text=View Cart");
+  const addToCartBtn = frstProduct.locator("a.add-to-cart").first();
+  await addToCartBtn.click();
 
-  await expect(page.locator("#cart_info_table")).toBeVisible();
-  console.log("Product added to cart!");
+  await page.getByRole("link", { name: "View Cart" }).click();
+  console.log("product added to cart");
 
-  console.log("Going to checkout...");
-  await page.click("text=Proceed To Checkout");
+  const cartTable = page.locator("#cart_info_table");
+  await expect(cartTable).toBeVisible();
+  console.log("product is in the cart only");
 
-  console.log("Logging in...");
+  console.log("going to checkout page");
+  const checkoutBtn = page.locator('a:has-text("Proceed To Checkout")');
+  await checkoutBtn.click();
 
-  await page.click("#checkoutModal u");
+  await page.waitForTimeout(1000);
 
-  await page.fill('input[data-qa="login-email"]', "playwrighttest@example.com");
-  await page.fill('input[data-qa="login-password"]', "GFXbtcVV@57kPSH");
-  await page.click('button[data-qa="login-button"]');
+  const loginModal = page.locator(".modal-dialog");
+  const isLoginRequired = await loginModal.isVisible().catch(() => false);
+
+  if (isLoginRequired) {
+    console.log("login is required,logging in");
+
+    await page.locator('.modal-dialog a[href="/login"]').click();
+
+    await page
+      .locator('input[data-qa="login-email"]')
+      .fill("playwrighttest@example.com");
+    await page
+      .locator('input[data-qa="login-password"]')
+      .fill("GFXbtcVV@57kPSH");
+
+    await page.locator('button[data-qa="login-button"]').click();
+
+    await page.waitForURL("https://automationexercise.com/");
+    console.log("logged in");
+
+    await page.goto("https://automationexercise.com/view_cart");
+
+    const checkoutBtnAgain = page.locator('a:has-text("Proceed To Checkout")');
+    await checkoutBtnAgain.click();
+  }
 
   await page.waitForTimeout(2000);
 
-  console.log("Placing order...");
+  console.log("placing order");
+  const placeOrderBtn = page.locator('a:has-text("Place Order")');
+  await placeOrderBtn.click();
 
-  await page.goto("https://automationexercise.com/view_cart");
-  await page.click("text=Proceed To Checkout");
-  await page.click("text=Place Order");
+  await page.waitForTimeout(2000);
 
-  await expect(page.locator('input[name="name_on_card"]')).toBeVisible();
-  console.log("Reached payment page!");
+  const cardNameField = page.locator('input[name="name_on_card"]');
+  await expect(cardNameField).toBeVisible();
+  console.log("payment page loaded - card details required");
 
-  await page.screenshot({ path: "payment-page.png" });
-  console.log("Screenshot took!");
-
-  console.log("Test completed successfully!");
+  await page.screenshot({ path: "payment-page.png", fullPage: true });
+  console.log("screenshot saved");
 });
