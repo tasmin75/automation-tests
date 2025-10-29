@@ -58,3 +58,4 @@ test("shopping cart test", async ({ page }) => {
   await page.screenshot({ path: "payment-page.png", fullPage: true });
   console.log("screenshot saved");
 });
+
